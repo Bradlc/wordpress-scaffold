@@ -1,0 +1,32 @@
+{
+	"name": "default",
+	"version": "1.0.0",
+	"author": "Brad Cornes",
+	"private": true,
+
+	"css_files": [
+		"one",
+		"two",
+		"three"
+	],
+
+	"js_files": [
+		"main"
+	],
+
+	"devDependencies" : {
+		"gulp": "latest",
+		"gulp-concat": "latest",
+		"gulp-replace": "latest",
+		"gulp-watch": "latest",
+		"gulp-stylus": "latest",
+		"gulp-minify-css": "latest",
+		"gulp-uglify": "latest",
+		"gulp-imagemin": "latest",
+		"gulp-rev": "latest",
+		"gulp-rev-replace": "latest",
+		"gulp-rev-css-url": "latest",
+		"through2": "latest",
+		"gulp-filter": "latest"
+	}
+}
