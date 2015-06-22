@@ -1,7 +1,9 @@
 var gulp = require('gulp'),
 	concat = require('gulp-concat'),
 	replace = require('gulp-replace'),
+	rename = require('gulp-rename'),
 	stylus = require('gulp-stylus'),
+	autoprefixer = require('gulp-autoprefixer'),
 	minifyCss = require('gulp-minify-css'),
 	uglify = require('gulp-uglify'),
 	imagemin = require('gulp-imagemin'),
@@ -12,9 +14,17 @@ var gulp = require('gulp'),
 
 	filter = require('gulp-filter'),
 	fs = require('fs'),
+	del = require('del'),
 	through = require('through2'),
 	path = require('path'),
-	spawn = require('child_process').spawn;
+	spawn = require('child_process').spawn,
+
+	browserify = require('browserify'),
+	vinylPaths = require('vinyl-paths'),
+	source = require('vinyl-source-stream'),
+	buffer = require('vinyl-buffer'),
+
+	rjs = require('amd-optimize');
 
 /*----------------------------*\
 	Read list of CSS and JS files and add full path
@@ -28,12 +38,41 @@ for(var i = 0; i < pkg.js_files.length; i++){
 }
 
 /*----------------------------*\
+	Clean
+\*----------------------------*/
+gulp.task('clean_css', function(cb){
+	del(['./assets/css/*'], cb);
+});
+gulp.task('clean_js', function(cb){
+	del(['./assets/js/*'], cb);
+});
+gulp.task('clean_all', function(cb){
+	del(['./assets/**/*'], cb);
+});
+
+gulp.task('unrev', function(cb){
+	var vp = vinylPaths();
+	gulp.src('./assets/**/*.{css,js,png,jpg,jpeg,gif,svg,ico}')
+		.pipe(vp)
+		.pipe(rename(function(path){
+			path.basename = path.basename.replace(/-[a-zA-Z0-9]{8,10}$/, '');
+		}))
+		.pipe(gulp.dest('./assets'))
+		.on('end', function(){
+			if(vp.paths){
+            	del(vp.paths, cb);
+            }
+        });
+});
+
+/*----------------------------*\
 	Compile Stylus
 \*----------------------------*/
-gulp.task('css', function(){
+gulp.task('css', ['clean_css'], function(){
 	return gulp.src(pkg.css_files)
 		.pipe(concat('main.styl'))
 		.pipe(stylus({compress:false, url:'embedurl'}))
+		.pipe(autoprefixer())
 		.pipe(minifyCss())
 		.pipe(gulp.dest('./assets/css'));
 });
@@ -48,13 +87,33 @@ gulp.task('images', function(){
 });
 
 /*----------------------------*\
-	Uglify JavaScript
+	JavaScript
 \*----------------------------*/
-gulp.task('uglify', function(){
-	return gulp.src(pkg.js_files)
-		.pipe(concat('main.js'))
-		.pipe(uglify())
-		.pipe(gulp.dest('./assets/js'));
+gulp.task('js', ['clean_js'], function(){
+	if(pkg.browserify === true){
+		return browserify(pkg.js_files[0])
+		    .bundle()
+		    .pipe(source('main.js'))
+		    .pipe(buffer())
+		    .pipe(uglify())
+		    .pipe(gulp.dest('./assets/js/'));
+	} else if(pkg.requirejs === true){
+		return gulp.src('./src/js/**/*.js')
+			.pipe(rjs('main', {
+				name: 'main',
+				configFile: './src/js/main.js',
+				baseUrl: './src/js',
+				paths: pkg.rjs_paths
+			}))
+			.pipe(concat('main.js'))
+			.pipe(uglify())
+			.pipe(gulp.dest('./assets/js'))
+	} else {
+		return gulp.src(pkg.js_files)
+			.pipe(concat('main.js'))
+			.pipe(uglify())
+			.pipe(gulp.dest('./assets/js'));
+	}
 });
 
 gulp.task('copy_fonts', function(){
@@ -71,7 +130,7 @@ gulp.task('copy_templates', function(){
 \*----------------------------*/
 gulp.task('replace_wp', function(){
 	return gulp.src('./*.php')
-		.pipe(replace('assets/', '<?=get_template_directory_uri()?>/assets/'))
+		.pipe(replace(/["']assets\//, '<?=get_template_directory_uri()?>/assets/'))
 		.pipe(gulp.dest('.'));
 });
 
@@ -105,10 +164,10 @@ var rmOrig = function() {
 // Save revisioned files, removing originals
 gulp.task('revision', function(){
 	return gulp.src(['assets/images/**/*', 'assets/css/*', 'assets/js/*'], {base: path.join(process.cwd(), 'assets')})
-	.pipe(filter(function(file){
-		// only files that haven't already been revisioned
+	/*.pipe(filter(function(file){
+		
 		return !( /-[a-z0-9]{8,10}\./.test(file.path) );
-	}))
+	}))*/
     .pipe(rev())
     .pipe(cssRef()) // replace references in CSS
     .pipe(gulp.dest('./assets'))
@@ -132,9 +191,21 @@ gulp.task('rev', ['revision'], function(){
 /*----------------------------*\
 	File watcher
 \*----------------------------*/
-gulp.task('watch', function(){
-	watch('./src/**/*', function(){
-		gulp.start('build');
+gulp.task('watch', ['cleanbuild'], function(){
+	watch('./src/styl/**/*', function(){
+		gulp.start('build:css');
+	});
+	watch('./src/js/**/*', function(){
+		gulp.start('build:js');
+	});
+	watch('./src/fonts/**/*', function(){
+		gulp.start('build:fonts');
+	});
+	watch('./src/images/**/*', function(){
+		gulp.start('build:images');
+	});
+	watch('./src/templates/**/*', function(){
+		gulp.start('build:templates');
 	});
 });
 
@@ -157,23 +228,77 @@ gulp.task('default', function() {
 });
 
 /*----------------------------*\
-	Build
+	CSS
 \*----------------------------*/
+gulp.task('build:css', ['unrev'], function(){
+	gulp.start('build:css2');
+});
+gulp.task('build:css2', ['copy_templates', 'css'], function(){
+	gulp.start('build2');
+});
+
+/*----------------------------*\
+	JS
+\*----------------------------*/
+gulp.task('build:js', ['unrev'], function(){
+	gulp.start('build:js2');
+});
+gulp.task('build:js2', ['copy_templates', 'js'], function(){
+	gulp.start('build2');
+});
+
+/*----------------------------*\
+	Fonts
+\*----------------------------*/
+gulp.task('build:fonts', ['unrev'], function(){
+	gulp.start('build:fonts2');
+});
+gulp.task('build:fonts2', ['copy_fonts'], function(){
+	gulp.start('build2');
+});
+
+/*----------------------------*\
+	Images
+\*----------------------------*/
+gulp.task('build:images', ['unrev'], function(){
+	gulp.start('build:images2');
+});
+gulp.task('build:images2', ['copy_templates', 'images'], function(){
+	gulp.start('build2');
+});
+
+/*----------------------------*\
+	Templates
+\*----------------------------*/
+gulp.task('build:templates', ['unrev'], function(){
+	gulp.start('build:templates2');
+});
+gulp.task('build:templates2', ['copy_templates'], function(){
+	gulp.start('build2');
+});
+
+gulp.task('master', ['unrev'], function(){
+	gulp.start('build');
+});
+
 gulp.task('build', [
 	'images',
 	'copy_templates',
 	'copy_fonts',
 	'css',
-	'uglify'
+	'js'
 ], function(){
 	gulp.start('build2');
 });
 
 gulp.task('build2', ['rev'], function(){
-	return gulp.start('build3');
+	return gulp.start('replace_wp');
 });
 
 gulp.task('build3', ['replace_wp'], function(){
 	return gulp.start('requirejs');
 });
 
+gulp.task('cleanbuild', ['clean_all'], function(){
+	gulp.start('master');
+});

@@ -13,13 +13,19 @@
 	"js_files": [
 		"main"
 	],
+	"requirejs": true,
+	"rjs_paths": {
+		"jquery": "empty:"
+	},
 
 	"devDependencies" : {
 		"gulp": "latest",
 		"gulp-concat": "latest",
 		"gulp-replace": "latest",
+		"gulp-rename": "latest",
 		"gulp-watch": "latest",
 		"gulp-stylus": "latest",
+		"gulp-autoprefixer": "latest",
 		"gulp-minify-css": "latest",
 		"gulp-uglify": "latest",
 		"gulp-imagemin": "latest",
@@ -27,6 +33,12 @@
 		"gulp-rev-replace": "latest",
 		"gulp-rev-css-url": "latest",
 		"through2": "latest",
-		"gulp-filter": "latest"
+		"gulp-filter": "latest",
+		"del": "latest",
+		"vinyl-paths": "latest",
+		"vinyl-source-stream": "latest",
+		"vinyl-buffer": "latest",
+		"browserify": "latest",
+		"amd-optimize": "latest"
 	}
 }
