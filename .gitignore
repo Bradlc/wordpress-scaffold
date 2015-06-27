@@ -2,3 +2,10 @@ node_modules
 wp-content/themes/default/src/fonts
 wp-content/themes/default/src/images
 wp-content/themes/default/npm-debug.log
+wp-content/themes/default/assets
+wp-content/themes/default/header.php
+wp-content/themes/default/footer.php
+wp-content/themes/default/page-home.php
+wp-content/themes/default/page-test.php
+wp-content/themes/default/src/templates/page-test.php
+wp-content/themes/default/src/styl/test.styl
