@@ -9,7 +9,8 @@
 		"mixins",
 		"normalize",
 		"grid",
-		"base"
+		"base",
+		"test"
 	],
 
 	"js_files": [
@@ -28,6 +29,7 @@
 		"gulp-watch": "latest",
 		"gulp-stylus": "latest",
 		"gulp-autoprefixer": "latest",
+		"gulp-purifycss": "purifycss/gulp-purifycss",
 		"gulp-minify-css": "latest",
 		"gulp-uglify": "latest",
 		"gulp-imagemin": "latest",
