@@ -130,7 +130,7 @@ gulp.task('copy_templates', function(){
 \*----------------------------*/
 gulp.task('replace_wp', function(){
 	return gulp.src('./*.php')
-		.pipe(replace(/["']assets\//, '<?=get_template_directory_uri()?>/assets/'))
+		.pipe(replace(/(["'])assets\//, '$1<?=get_template_directory_uri()?>/assets/'))
 		.pipe(gulp.dest('.'));
 });
 
