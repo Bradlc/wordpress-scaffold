@@ -1,0 +1,58 @@
+opacity(value)
+	-ms-filter: s('"progid:DXImageTransform.Microsoft.Alpha(Opacity=%s)"', value*100);
+	filter: s('alpha(opacity=%s)', value*100);
+	opacity: value;
+
+gradient-v(from-color, to-color)
+	background: from-color;
+	background: -moz-linear-gradient(top, from-color 0%, to-color 100%);
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,from-color), color-stop(100%,to-color));
+	background: -webkit-linear-gradient(top, from-color 0%,to-color 100%);
+	background: -o-linear-gradient(top, from-color 0%,to-color 100%);
+	background: -ms-linear-gradient(top, from-color 0%,to-color 100%);
+	background: linear-gradient(to bottom, from-color 0%,to-color 100%);
+	filter: s( "progid:DXImageTransform.Microsoft.gradient( startColorstr='%s', endColorstr='%s',GradientType=0 )", from-color, to-color );
+
+gradient-h(from-color, to-color)
+	background: from-color;
+	background: -moz-linear-gradient(left, from-color 0%, to-color 100%);
+	background: -webkit-gradient(linear, left top, right top, color-stop(0%,from-color), color-stop(100%,to-color));
+	background: -webkit-linear-gradient(left, from-color 0%,to-color 100%);
+	background: -o-linear-gradient(left, from-color 0%,to-color 100%);
+	background: -ms-linear-gradient(left, from-color 0%,to-color 100%);
+	background: linear-gradient(to right, from-color 0%,to-color 100%);
+	filter: s( "progid:DXImageTransform.Microsoft.gradient( startColorstr='%s', endColorstr='%s',GradientType=1 )", from-color, to-color );
+
+xs()
+	@media (max-width: 767px)
+		{block}
+
+sm()
+	@media (max-width: 991px)
+		{block}
+
+sm-only()
+	@media (min-width: 768px) and (max-width: 991px)
+		{block}
+
+md()
+	@media (max-width: 1199px)
+		{block}
+
+md-only()
+	@media (min-width: 992px) and (max-width: 1199px)
+		{block}
+
+retina()
+	@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi)
+		{block}
+
+retina-image( img-src, size, suffix = "@2x" )
+	ext = extname( img-src )
+	image-src = pathjoin( dirname( img-src ), basename( img-src, ext ) + ext )
+	retina-src = pathjoin( dirname( img-src ), basename( img-src, ext ) + suffix + ext )
+	
+	background-image: url( image-src )
+	+retina()
+		background-image: url( retina-src )
+		background-size: size

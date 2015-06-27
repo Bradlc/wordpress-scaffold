@@ -5,9 +5,11 @@
 	"private": true,
 
 	"css_files": [
-		"one",
-		"two",
-		"three"
+		"variables",
+		"mixins",
+		"normalize",
+		"grid",
+		"base"
 	],
 
 	"js_files": [
