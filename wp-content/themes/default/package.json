@@ -43,6 +43,7 @@
 		"vinyl-source-stream": "latest",
 		"vinyl-buffer": "latest",
 		"browserify": "latest",
-		"amd-optimize": "latest"
+		"amd-optimize": "latest",
+		"gulp-livereload": "latest"
 	}
 }

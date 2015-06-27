@@ -25,7 +25,8 @@ var gulp = require('gulp'),
 	source = require('vinyl-source-stream'),
 	buffer = require('vinyl-buffer'),
 
-	rjs = require('amd-optimize');
+	rjs = require('amd-optimize'),
+	livereload = require('gulp-livereload');
 
 /*----------------------------*\
 	Read list of CSS and JS files and add full path
@@ -133,7 +134,10 @@ gulp.task('copy_templates', function(){
 gulp.task('replace_wp', function(){
 	return gulp.src('./*.php')
 		.pipe(replace(/(["'])assets\//, '$1<?=get_template_directory_uri()?>/assets/'))
-		.pipe(gulp.dest('.'));
+		.pipe(gulp.dest('.'))
+		.on('end', function(){
+			livereload.reload();
+		});
 });
 
 /*----------------------------*\
@@ -194,6 +198,7 @@ gulp.task('rev', ['revision'], function(){
 	File watcher
 \*----------------------------*/
 gulp.task('watch', ['cleanbuild'], function(){
+	livereload.listen();
 	watch('./src/styl/**/*', function(){
 		gulp.start('build:css');
 	});
