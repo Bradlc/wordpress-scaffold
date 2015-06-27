@@ -935,3 +935,79 @@ GRID
 .text-capitalize {
     text-transform: capitalize;
 }
+
+/*----------------------------*\
+    Trim
+\*----------------------------*/
+.trim,
+.trim-top {
+    > *:first-child {
+        margin-top: 0 !important
+    }
+}
+.trim,
+.trim-bottom {
+    > *:last-child {
+        margin-bottom: 0 !important
+    }
+}
+
+@media (max-width: 767px){
+    .trim-xs,
+    .trim-xs-top {
+        > *:first-child {
+            margin-top: 0 !important
+        }
+    }
+    .trim-xs,
+    .trim-xs-bottom {
+        > *:last-child {
+            margin-bottom: 0 !important
+        }
+    }
+}
+
+@media (min-width: 768px) (max-width: 991px){
+    .trim-sm,
+    .trim-sm-top {
+        > *:first-child {
+            margin-top: 0 !important
+        }
+    }
+    .trim-sm,
+    .trim-sm-bottom {
+        > *:last-child {
+            margin-bottom: 0 !important
+        }
+    }
+}
+
+@media (min-width: 992px) and (max-width: 1199px){
+    .trim-md,
+    .trim-md-top {
+        > *:first-child {
+            margin-top: 0 !important
+        }
+    }
+    .trim-md,
+    .trim-md-bottom {
+        > *:last-child {
+            margin-bottom: 0 !important
+        }
+    }
+}
+
+@media (min-width: 1200px){
+    .trim-lg,
+    .trim-lg-top {
+        > *:first-child {
+            margin-top: 0 !important
+        }
+    }
+    .trim-lg,
+    .trim-lg-bottom {
+        > *:last-child {
+            margin-bottom: 0 !important
+        }
+    }
+}
