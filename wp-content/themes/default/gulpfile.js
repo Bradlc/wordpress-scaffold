@@ -133,7 +133,7 @@ gulp.task('copy_templates', function(){
 \*----------------------------*/
 gulp.task('replace_wp', function(){
 	return gulp.src('./*.php')
-		.pipe(replace(/(["'])assets\//, '$1<?=get_template_directory_uri()?>/assets/'))
+		.pipe(replace(/(["'])assets\//g, '$1<?=get_template_directory_uri()?>/assets/'))
 		.pipe(gulp.dest('.'))
 		.on('end', function(){
 			livereload.reload();
@@ -197,22 +197,25 @@ gulp.task('rev', ['revision'], function(){
 /*----------------------------*\
 	File watcher
 \*----------------------------*/
-gulp.task('watch', ['cleanbuild'], function(){
+gulp.task('watch:build', ['cleanbuild'], function(){
+	gulp.start('watch');
+});
+gulp.task('watch', function(){
 	livereload.listen();
 	watch('./src/styl/**/*', function(){
-		gulp.start('build:css');
+		gulp.start('master:notimages');
 	});
 	watch('./src/js/**/*', function(){
-		gulp.start('build:js');
+		gulp.start('master:notimages');
 	});
 	watch('./src/fonts/**/*', function(){
-		gulp.start('build:fonts');
+		gulp.start('master:notimages');
 	});
 	watch('./src/images/**/*', function(){
-		gulp.start('build:images');
+		gulp.start('master');
 	});
 	watch('./src/templates/**/*', function(){
-		gulp.start('build:templates');
+		gulp.start('master:notimages');
 	});
 });
 
@@ -231,7 +234,8 @@ gulp.task('default', function() {
 	}
 
 	gulp.watch('package.json', restart);
-	restart();
+	//restart();
+	process = spawn('gulp', ['watch:build'], {stdio: 'inherit'});
 });
 
 /*----------------------------*\
@@ -290,6 +294,19 @@ gulp.task('master', ['unrev'], function(){
 
 gulp.task('build', [
 	'images',
+	'copy_templates',
+	'copy_fonts',
+	'css',
+	'js'
+], function(){
+	gulp.start('build2');
+});
+
+gulp.task('master:notimages', ['unrev'], function(){
+	gulp.start('build:notimages');
+});
+
+gulp.task('build:notimages', [
 	'copy_templates',
 	'copy_fonts',
 	'css',
