@@ -21,6 +21,17 @@
 		"jquery": "empty:"
 	},
 
+	/*----------------------------*\
+		Files to revision
+		Remove CSS and JS files if using W3TC
+	\*----------------------------*/
+	"revision": [
+		"assets/images/**/*",
+		"assets/fonts/**/*",
+		"assets/css/*",
+		"assets/js/*"
+	],
+
 	"devDependencies" : {
 		"gulp": "latest",
 		"gulp-concat": "latest",

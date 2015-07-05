@@ -169,7 +169,7 @@ var rmOrig = function() {
 
 // Save revisioned files, removing originals
 gulp.task('revision', function(){
-	return gulp.src(['assets/images/**/*', 'assets/css/*', 'assets/js/*'], {base: path.join(process.cwd(), 'assets')})
+	return gulp.src(pkg.revision, {base: path.join(process.cwd(), 'assets')})
 	/*.pipe(filter(function(file){
 		
 		return !( /-[a-z0-9]{8,10}\./.test(file.path) );
