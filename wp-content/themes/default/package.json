@@ -21,10 +21,6 @@
 		"jquery": "empty:"
 	},
 
-	/*----------------------------*\
-		Files to revision
-		Remove CSS and JS files if using W3TC
-	\*----------------------------*/
 	"revision": [
 		"assets/images/**/*",
 		"assets/fonts/**/*",
