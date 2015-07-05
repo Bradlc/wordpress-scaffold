@@ -202,20 +202,11 @@ gulp.task('watch:build', ['cleanbuild'], function(){
 });
 gulp.task('watch', function(){
 	livereload.listen();
-	watch('./src/styl/**/*', function(){
-		gulp.start('master:notimages');
-	});
-	watch('./src/js/**/*', function(){
-		gulp.start('master:notimages');
-	});
-	watch('./src/fonts/**/*', function(){
+	watch(['./src/styl/**/*', './src/js/**/*', './src/fonts/**/*', './src/templates/**/*'], function(){
 		gulp.start('master:notimages');
 	});
 	watch('./src/images/**/*', function(){
 		gulp.start('master');
-	});
-	watch('./src/templates/**/*', function(){
-		gulp.start('master:notimages');
 	});
 });
 
