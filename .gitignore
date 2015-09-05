@@ -5,6 +5,8 @@ wp-content/themes/default/npm-debug.log
 wp-content/themes/default/assets
 wp-content/themes/default/header.php
 wp-content/themes/default/footer.php
+wp-content/themes/default/index.php
+wp-content/themes/default/functions.php
 wp-content/themes/default/page-home.php
 wp-content/themes/default/page-test.php
 wp-content/themes/default/src/templates/page-test.php

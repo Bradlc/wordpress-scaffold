@@ -1,32 +1,27 @@
 var gulp = require('gulp'),
-	concat = require('gulp-concat'),
-	replace = require('gulp-replace'),
-	rename = require('gulp-rename'),
-	stylus = require('gulp-stylus'),
-	autoprefixer = require('gulp-autoprefixer'),
-	purifycss = require('gulp-purifycss'),
-	minifyCss = require('gulp-minify-css'),
-	uglify = require('gulp-uglify'),
-	imagemin = require('gulp-imagemin'),
-	watch = require('gulp-watch'),
-	rev = require('gulp-rev'),
-	revReplace = require('gulp-rev-replace'),
-	cssRef = require('gulp-rev-css-url'),
+    concat = require('gulp-concat'),
+    replace = require('gulp-replace'),
+    rename = require('gulp-rename'),
+    stylus = require('gulp-stylus'),
+    autoprefixer = require('gulp-autoprefixer'),
+    purifycss = require('gulp-purifycss'),
+    minifyCss = require('gulp-minify-css'),
+    uglify = require('gulp-uglify'),
+    imagemin = require('gulp-imagemin'),
+    watch = require('gulp-watch'),
+    rev = require('gulp-rev'),
+    revReplace = require('gulp-rev-replace'),
+    cssRef = require('gulp-rev-css-url'),
 
-	filter = require('gulp-filter'),
-	fs = require('fs'),
-	del = require('del'),
-	through = require('through2'),
-	path = require('path'),
-	spawn = require('child_process').spawn,
+    fs = require('fs'),
+    del = require('del'),
+    through = require('through2'),
+    path = require('path'),
+    spawn = require('child_process').spawn,
 
-	browserify = require('browserify'),
-	vinylPaths = require('vinyl-paths'),
-	source = require('vinyl-source-stream'),
-	buffer = require('vinyl-buffer'),
+    vinylPaths = require('vinyl-paths'),
 
-	rjs = require('amd-optimize'),
-	livereload = require('gulp-livereload');
+    livereload = require('gulp-livereload');
 
 /*----------------------------*\
 	Read list of CSS and JS files and add full path
@@ -93,30 +88,10 @@ gulp.task('images', function(){
 	JavaScript
 \*----------------------------*/
 gulp.task('js', ['clean_js'], function(){
-	if(pkg.browserify === true){
-		return browserify(pkg.js_files[0])
-		    .bundle()
-		    .pipe(source('main.js'))
-		    .pipe(buffer())
-		    .pipe(uglify())
-		    .pipe(gulp.dest('./assets/js/'));
-	} else if(pkg.requirejs === true){
-		return gulp.src('./src/js/**/*.js')
-			.pipe(rjs('main', {
-				name: 'main',
-				configFile: './src/js/main.js',
-				baseUrl: './src/js',
-				paths: pkg.rjs_paths
-			}))
-			.pipe(concat('main.js'))
-			.pipe(uglify())
-			.pipe(gulp.dest('./assets/js'))
-	} else {
-		return gulp.src(pkg.js_files)
-			.pipe(concat('main.js'))
-			.pipe(uglify())
-			.pipe(gulp.dest('./assets/js'));
-	}
+	return gulp.src(pkg.js_files)
+		.pipe(concat('main.js'))
+		.pipe(uglify())
+		.pipe(gulp.dest('./assets/js'));
 });
 
 gulp.task('copy_fonts', function(){
@@ -141,18 +116,8 @@ gulp.task('replace_wp', function(){
 });
 
 /*----------------------------*\
-	Remove extension from RequireJS file
-\*----------------------------*/
-gulp.task('requirejs', function(){
-	return gulp.src('footer.php')
-		.pipe(replace(/<script data-src="([^ ]+)\.js"/, '<script data-src="$1"'))
-		.pipe(gulp.dest('.'));
-});
-
-/*----------------------------*\
 	File revisioning for images, CSS, JS (add fonts??)
 \*----------------------------*/
-
 // Remove originals
 var rmOrig = function() {
   return through.obj(function(file, enc, cb) {
@@ -170,10 +135,6 @@ var rmOrig = function() {
 // Save revisioned files, removing originals
 gulp.task('revision', function(){
 	return gulp.src(pkg.revision, {base: path.join(process.cwd(), 'assets')})
-	/*.pipe(filter(function(file){
-		
-		return !( /-[a-z0-9]{8,10}\./.test(file.path) );
-	}))*/
     .pipe(rev())
     .pipe(cssRef()) // replace references in CSS
     .pipe(gulp.dest('./assets'))
@@ -229,55 +190,6 @@ gulp.task('default', function() {
 	process = spawn('gulp', ['watch:build'], {stdio: 'inherit'});
 });
 
-/*----------------------------*\
-	CSS
-\*----------------------------*/
-gulp.task('build:css', ['unrev'], function(){
-	gulp.start('build:css2');
-});
-gulp.task('build:css2', ['copy_templates', 'css'], function(){
-	gulp.start('build2');
-});
-
-/*----------------------------*\
-	JS
-\*----------------------------*/
-gulp.task('build:js', ['unrev'], function(){
-	gulp.start('build:js2');
-});
-gulp.task('build:js2', ['copy_templates', 'js'], function(){
-	gulp.start('build2');
-});
-
-/*----------------------------*\
-	Fonts
-\*----------------------------*/
-gulp.task('build:fonts', ['unrev'], function(){
-	gulp.start('build:fonts2');
-});
-gulp.task('build:fonts2', ['copy_fonts'], function(){
-	gulp.start('build2');
-});
-
-/*----------------------------*\
-	Images
-\*----------------------------*/
-gulp.task('build:images', ['unrev'], function(){
-	gulp.start('build:images2');
-});
-gulp.task('build:images2', ['copy_templates', 'images'], function(){
-	gulp.start('build2');
-});
-
-/*----------------------------*\
-	Templates
-\*----------------------------*/
-gulp.task('build:templates', ['unrev'], function(){
-	gulp.start('build:templates2');
-});
-gulp.task('build:templates2', ['copy_templates'], function(){
-	gulp.start('build2');
-});
 
 gulp.task('master', ['unrev'], function(){
 	gulp.start('build');
@@ -308,10 +220,6 @@ gulp.task('build:notimages', [
 
 gulp.task('build2', ['rev'], function(){
 	return gulp.start('replace_wp');
-});
-
-gulp.task('build3', ['replace_wp'], function(){
-	return gulp.start('requirejs');
 });
 
 gulp.task('cleanbuild', ['clean_all'], function(){

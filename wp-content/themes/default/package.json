@@ -9,6 +9,7 @@
 		"mixins",
 		"normalize",
 		"grid",
+		"fonts",
 		"base",
 		"test"
 	],
@@ -16,10 +17,6 @@
 	"js_files": [
 		"main"
 	],
-	"requirejs": true,
-	"rjs_paths": {
-		"jquery": "empty:"
-	},
 
 	"revision": [
 		"assets/images/**/*",
@@ -44,13 +41,8 @@
 		"gulp-rev-replace": "latest",
 		"gulp-rev-css-url": "latest",
 		"through2": "latest",
-		"gulp-filter": "latest",
 		"del": "latest",
 		"vinyl-paths": "latest",
-		"vinyl-source-stream": "latest",
-		"vinyl-buffer": "latest",
-		"browserify": "latest",
-		"amd-optimize": "latest",
 		"gulp-livereload": "latest"
 	}
 }
