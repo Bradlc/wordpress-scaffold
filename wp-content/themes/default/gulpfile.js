@@ -49,7 +49,7 @@ gulp.task('clean_all', function(cb){
 
 gulp.task('unrev', function(cb){
 	var vp = vinylPaths();
-	gulp.src('./assets/**/*.{css,js,png,jpg,jpeg,gif,svg,ico}')
+	gulp.src(pkg.revision)
 		.pipe(vp)
 		.pipe(rename(function(path){
 			path.basename = path.basename.replace(/-[a-zA-Z0-9]{8,10}$/, '');
