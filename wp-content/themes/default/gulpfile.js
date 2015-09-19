@@ -6,6 +6,7 @@ var gulp = require('gulp'),
     autoprefixer = require('gulp-autoprefixer'),
     purifycss = require('gulp-purifycss'),
     minifyCss = require('gulp-minify-css'),
+    jshint = require('gulp-jshint'),
     uglify = require('gulp-uglify'),
     sourcemaps = require('gulp-sourcemaps'),
     imagemin = require('gulp-imagemin'),
@@ -92,6 +93,8 @@ gulp.task('images', function(){
 \*----------------------------*/
 gulp.task('js', ['clean_js'], function(){
 	return gulp.src(pkg.js_files)
+		.pipe(jshint())
+		.pipe(jshint.reporter('jshint-stylish'))
 		.pipe(sourcemaps.init())
 		.pipe(concat('main.js'))
 		.pipe(uglify())
