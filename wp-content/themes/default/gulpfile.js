@@ -7,6 +7,7 @@ var gulp = require('gulp'),
     purifycss = require('gulp-purifycss'),
     minifyCss = require('gulp-minify-css'),
     uglify = require('gulp-uglify'),
+    sourcemaps = require('gulp-sourcemaps'),
     imagemin = require('gulp-imagemin'),
     watch = require('gulp-watch'),
     rev = require('gulp-rev'),
@@ -67,11 +68,13 @@ gulp.task('unrev', function(cb){
 \*----------------------------*/
 gulp.task('css', ['clean_css'], function(){
 	return gulp.src(pkg.css_files)
+		.pipe(sourcemaps.init())
 		.pipe(concat('main.styl'))
 		.pipe(stylus({compress:false, url:'embedurl'}))
 		.pipe(purifycss(['./src/js/**/*.js', './src/templates/**/*.php']))
 		.pipe(autoprefixer())
 		.pipe(minifyCss())
+		.pipe(sourcemaps.write('.'))
 		.pipe(gulp.dest('./assets/css'));
 });
 
@@ -89,8 +92,10 @@ gulp.task('images', function(){
 \*----------------------------*/
 gulp.task('js', ['clean_js'], function(){
 	return gulp.src(pkg.js_files)
+		.pipe(sourcemaps.init())
 		.pipe(concat('main.js'))
 		.pipe(uglify())
+		.pipe(sourcemaps.write('.'))
 		.pipe(gulp.dest('./assets/js'));
 });
 
