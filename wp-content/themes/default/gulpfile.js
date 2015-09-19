@@ -116,7 +116,7 @@ gulp.task('replace_wp', function(){
 });
 
 /*----------------------------*\
-	File revisioning for images, CSS, JS (add fonts??)
+	File revisioning for images, CSS, JS
 \*----------------------------*/
 // Remove originals
 var rmOrig = function() {
