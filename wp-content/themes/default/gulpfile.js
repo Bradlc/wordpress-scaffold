@@ -1,4 +1,6 @@
 var gulp = require('gulp'),
+    plumber = require('gulp-plumber'),
+    notify = require('gulp-notify'),
     concat = require('gulp-concat'),
     replace = require('gulp-replace'),
     rename = require('gulp-rename'),
@@ -69,6 +71,9 @@ gulp.task('unrev', function(cb){
 \*----------------------------*/
 gulp.task('css', ['clean_css'], function(){
 	return gulp.src(pkg.css_files)
+		.pipe(plumber({
+			errorHandler: notify.onError('<%= error.message %>')
+		}))
 		.pipe(sourcemaps.init())
 		.pipe(concat('main.styl'))
 		.pipe(stylus({compress:false, url:'embedurl'}))
@@ -93,8 +98,12 @@ gulp.task('images', function(){
 \*----------------------------*/
 gulp.task('js', ['clean_js'], function(){
 	return gulp.src(pkg.js_files)
+		.pipe(plumber({
+			errorHandler: notify.onError('<%= error.message %>')
+		}))
 		.pipe(jshint())
 		.pipe(jshint.reporter('jshint-stylish'))
+		.pipe(jshint.reporter('fail'))
 		.pipe(sourcemaps.init())
 		.pipe(concat('main.js'))
 		.pipe(uglify())
