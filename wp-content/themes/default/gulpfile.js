@@ -53,7 +53,7 @@ gulp.task('clean_all', function(cb){
 
 gulp.task('unrev', function(cb){
 	var vp = vinylPaths();
-	gulp.src(pkg.revision)
+	gulp.src(pkg.revision, {base: path.join(process.cwd(), 'assets')})
 		.pipe(vp)
 		.pipe(rename(function(path){
 			path.basename = path.basename.replace(/-[a-zA-Z0-9]{8,10}$/, '');
