@@ -8,48 +8,48 @@ remove_action( 'wp_print_styles', 'print_emoji_styles' );
 
 
 function custom_excerpt_length( $length ) {
-    return 20;
+	return 20;
 }
 add_filter( 'excerpt_length', 'custom_excerpt_length', 999 );
 
 /*------------------------------------*\
-    Theme Support
+	Theme Support
 \*------------------------------------*/
 if (function_exists('add_theme_support'))
 {
-    // Add Menu Support
-    add_theme_support('menus');
+	// Add Menu Support
+	add_theme_support('menus');
 
-    // Add Thumbnail Theme Support
-    add_theme_support('post-thumbnails');
+	// Add Thumbnail Theme Support
+	add_theme_support('post-thumbnails');
 
-    //add_image_size('example', 800, 480, true);
+	//add_image_size('example', 800, 480, true);
 
-    // Enables post and comment RSS feed links to head
-    add_theme_support('automatic-feed-links');
+	// Enables post and comment RSS feed links to head
+	add_theme_support('automatic-feed-links');
 
 }
 
 /*------------------------------------*\
-    Functions
+	Functions
 \*------------------------------------*/
 
 // Add page slug to body class, love this - Credit: Starkers Wordpress Theme
 function add_slug_to_body_class($classes)
 {
-    global $post;
-    if (is_home()) {
-        $key = array_search('blog', $classes);
-        if ($key > -1) {
-            unset($classes[$key]);
-        }
-    } elseif (is_page()) {
-        $classes[] = sanitize_html_class($post->post_name);
-    } elseif (is_singular()) {
-        $classes[] = sanitize_html_class($post->post_name);
-    }
+	global $post;
+	if (is_home()) {
+		$key = array_search('blog', $classes);
+		if ($key > -1) {
+			unset($classes[$key]);
+		}
+	} elseif (is_page()) {
+		$classes[] = sanitize_html_class($post->post_name);
+	} elseif (is_singular()) {
+		$classes[] = sanitize_html_class($post->post_name);
+	}
 
-    return $classes;
+	return $classes;
 }
 
 
@@ -57,28 +57,28 @@ function add_slug_to_body_class($classes)
 // Remove wp_head() injected Recent Comment styles
 function my_remove_recent_comments_style()
 {
-    global $wp_widget_factory;
-    remove_action('wp_head', array(
-        $wp_widget_factory->widgets['WP_Widget_Recent_Comments'],
-        'recent_comments_style'
-    ));
+	global $wp_widget_factory;
+	remove_action('wp_head', array(
+		$wp_widget_factory->widgets['WP_Widget_Recent_Comments'],
+		'recent_comments_style'
+	));
 }
 
 // Remove 'text/css' from our enqueued stylesheet
 function html5_style_remove($tag)
 {
-    return preg_replace('~\s+type=["\'][^"\']++["\']~', '', $tag);
+	return preg_replace('~\s+type=["\'][^"\']++["\']~', '', $tag);
 }
 
 // Remove thumbnail width and height dimensions that prevent fluid images in the_thumbnail
 function remove_thumbnail_dimensions( $html )
 {
-    $html = preg_replace('/(width|height)=\"\d*\"\s/', "", $html);
-    return $html;
+	$html = preg_replace('/(width|height)=\"\d*\"\s/', "", $html);
+	return $html;
 }
 
 /*------------------------------------*\
-    Actions + Filters + ShortCodes
+	Actions + Filters + ShortCodes
 \*------------------------------------*/
 
 add_action('widgets_init', 'my_remove_recent_comments_style'); // Remove inline Recent Comment Styles from wp_head()
