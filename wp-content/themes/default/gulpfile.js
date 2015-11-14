@@ -6,7 +6,6 @@ var gulp = require('gulp'),
     rename = require('gulp-rename'),
     stylus = require('gulp-stylus'),
     autoprefixer = require('gulp-autoprefixer'),
-    purifycss = require('gulp-purifycss'),
     minifyCss = require('gulp-minify-css'),
     jshint = require('gulp-jshint'),
     uglify = require('gulp-uglify'),
@@ -78,7 +77,6 @@ gulp.task('css', ['clean_css'], function(){
 		}))
 		.pipe(sourcemaps.init())
 		.pipe(stylus({compress:false, url:'embedurl'}))
-		.pipe(purifycss(['./src/js/**/*.js', './src/templates/**/*.php']))
 		.pipe(autoprefixer())
 		.pipe(minifyCss())
 		.pipe(sourcemaps.write('.'))
