@@ -1,4 +1,5 @@
 var gulp = require('gulp'),
+    gutil = require('gulp-util'),
     plumber = require('gulp-plumber'),
     notify = require('gulp-notify'),
     concat = require('gulp-concat'),
@@ -24,16 +25,14 @@ var gulp = require('gulp'),
 
     vinylPaths = require('vinyl-paths'),
 
-    livereload = require('gulp-livereload');
+    livereload = require('gulp-livereload'),
+
+    webpack = require('webpack');
 
 /*----------------------------*\
 	Read list of CSS and JS files and add full path
 \*----------------------------*/
 var pkg = require('./package.json');
-
-for(var i = 0; i < pkg.js_files.length; i++){
-	pkg.js_files[i] = './src/js/' + pkg.js_files[i] + '.js';
-}
 
 /*----------------------------*\
 	Clean
@@ -93,21 +92,63 @@ gulp.task('images', function(){
 /*----------------------------*\
 	JavaScript
 \*----------------------------*/
-gulp.task('js', ['clean_js'], function(){
-	return gulp.src(pkg.js_files)
-		.pipe(plumber({
-			errorHandler: notify.onError({
-				title: 'JavaScript Error',
-				message: '<%= error.message %>',
-				icon: 'http://littleblackboxdev.co.uk/gulp-logo.png'
-			})
-		}))
-		.pipe(sourcemaps.init())
-		.pipe(reference())
-		.pipe(uglify())
-		.pipe(sourcemaps.write('.', {sourceRoot:'./src/js'}))
-		.pipe(gulp.dest('./assets/js'));
-});
+gulp.task( 'webpack', ['clean_js'], function( callback ) {
+	// run webpack
+	webpack( {
+		context: __dirname + '/src/js',
+		entry: './main.js',
+		output: {
+			path: __dirname + '/assets/js',
+			filename: 'main.js'
+		},
+		module: {
+			loaders: [
+				{
+					test: /\.jsx?$/,
+					exclude: /(node_modules|bower_components)/,
+					loader: 'babel-loader',
+					query: {
+						'presets': ['es2015']
+					}
+				}
+			]
+		}
+	}, function( err, stats ) {
+		if( err ) throw new gutil.PluginError( 'webpack', err );
+		gutil.log( '[webpack]', stats.toString( {
+			colors: true
+		} ) );
+		callback();
+	} );
+} );
+
+if(pkg.es2015) {
+
+	gulp.task('js', ['webpack'], function(){
+		return gulp.src('assets/js/main.js')
+			.pipe(uglify())
+			.pipe(gulp.dest('assets/js'));
+	});
+
+} else {
+
+	gulp.task('js', ['clean_js'], function(){
+		return gulp.src('./src/js/main.js')
+			.pipe(plumber({
+				errorHandler: notify.onError({
+					title: 'JavaScript Error',
+					message: '<%= error.message %>',
+					icon: 'http://littleblackboxdev.co.uk/gulp-logo.png'
+				})
+			}))
+			.pipe(sourcemaps.init())
+			.pipe(reference())
+			.pipe(uglify())
+			.pipe(sourcemaps.write('.', {sourceRoot:'./src/js'}))
+			.pipe(gulp.dest('./assets/js'));
+	});
+
+}
 
 gulp.task('copy_fonts', function(){
 	return gulp.src('./src/fonts/*')
