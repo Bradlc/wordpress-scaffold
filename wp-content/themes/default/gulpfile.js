@@ -14,6 +14,7 @@ var gulp = require('gulp'),
     rev = require('gulp-rev'),
     revReplace = require('gulp-rev-replace'),
     cssRef = require('gulp-rev-css-url'),
+    reference = require('gulp-reference'),
 
     fs = require('fs'),
     del = require('del'),
@@ -102,9 +103,9 @@ gulp.task('js', ['clean_js'], function(){
 			})
 		}))
 		.pipe(sourcemaps.init())
-		.pipe(concat('main.js'))
+		.pipe(reference())
 		.pipe(uglify())
-		.pipe(sourcemaps.write('.'))
+		.pipe(sourcemaps.write('.', {sourceRoot:'./src/js'}))
 		.pipe(gulp.dest('./assets/js'));
 });
 
