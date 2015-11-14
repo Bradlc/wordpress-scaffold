@@ -75,11 +75,9 @@ gulp.task('css', ['clean_css'], function(){
 				icon: 'http://littleblackboxdev.co.uk/gulp-logo.png'
 			})
 		}))
-		.pipe(sourcemaps.init())
 		.pipe(stylus({compress:false, url:'embedurl'}))
 		.pipe(autoprefixer())
 		.pipe(minifyCss())
-		.pipe(sourcemaps.write('.'))
 		.pipe(gulp.dest('./assets/css'));
 });
 
