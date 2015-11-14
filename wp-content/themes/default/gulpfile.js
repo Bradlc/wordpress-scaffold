@@ -31,9 +31,7 @@ var gulp = require('gulp'),
 	Read list of CSS and JS files and add full path
 \*----------------------------*/
 var pkg = require('./package.json');
-for(var i = 0; i < pkg.css_files.length; i++){
-	pkg.css_files[i] = './src/styl/' + pkg.css_files[i] + '.styl';
-}
+
 for(var i = 0; i < pkg.js_files.length; i++){
 	pkg.js_files[i] = './src/js/' + pkg.js_files[i] + '.js';
 }
@@ -70,7 +68,7 @@ gulp.task('unrev', function(cb){
 	Compile Stylus
 \*----------------------------*/
 gulp.task('css', ['clean_css'], function(){
-	return gulp.src(pkg.css_files)
+	return gulp.src('./src/styl/main.styl')
 		.pipe(plumber({
 			errorHandler: notify.onError({
 				title: 'CSS Error',
@@ -79,7 +77,6 @@ gulp.task('css', ['clean_css'], function(){
 			})
 		}))
 		.pipe(sourcemaps.init())
-		.pipe(concat('main.styl'))
 		.pipe(stylus({compress:false, url:'embedurl'}))
 		.pipe(purifycss(['./src/js/**/*.js', './src/templates/**/*.php']))
 		.pipe(autoprefixer())

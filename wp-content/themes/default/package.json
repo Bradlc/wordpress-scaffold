@@ -4,16 +4,6 @@
 	"author": "Brad Cornes",
 	"private": true,
 
-	"css_files": [
-		"variables",
-		"mixins",
-		"normalize",
-		"grid",
-		"fonts",
-		"base",
-		"test"
-	],
-
 	"js_files": [
 		"main"
 	],
