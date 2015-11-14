@@ -7,7 +7,6 @@ var gulp = require('gulp'),
     stylus = require('gulp-stylus'),
     autoprefixer = require('gulp-autoprefixer'),
     minifyCss = require('gulp-minify-css'),
-    jshint = require('gulp-jshint'),
     uglify = require('gulp-uglify'),
     sourcemaps = require('gulp-sourcemaps'),
     imagemin = require('gulp-imagemin'),
@@ -102,9 +101,6 @@ gulp.task('js', ['clean_js'], function(){
 				icon: 'http://littleblackboxdev.co.uk/gulp-logo.png'
 			})
 		}))
-		.pipe(jshint())
-		.pipe(jshint.reporter('jshint-stylish'))
-		.pipe(jshint.reporter('fail'))
 		.pipe(sourcemaps.init())
 		.pipe(concat('main.js'))
 		.pipe(uglify())
