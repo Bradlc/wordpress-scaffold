@@ -30,7 +30,7 @@ var gulp = require('gulp'),
     webpack = require('webpack');
 
 /*----------------------------*\
-	Read list of CSS and JS files and add full path
+	Load options from package file
 \*----------------------------*/
 var pkg = require('./package.json');
 
@@ -172,7 +172,7 @@ gulp.task('replace_wp', function(){
 });
 
 /*----------------------------*\
-	File revisioning for images, CSS, JS
+	File revisioning
 \*----------------------------*/
 // Remove originals
 var rmOrig = function() {
@@ -214,7 +214,7 @@ gulp.task('rev', ['revision'], function(){
 /*----------------------------*\
 	File watcher
 \*----------------------------*/
-gulp.task('watch:build', ['cleanbuild'], function(){
+gulp.task('default', ['cleanbuild'], function(){
 	gulp.start('watch');
 });
 gulp.task('watch', function(){
@@ -227,24 +227,7 @@ gulp.task('watch', function(){
 	});
 });
 
-/*----------------------------*\
-	Default task starts watch task in a new process
-	Restarts when package file changes (add gulpfile??)
-\*----------------------------*/
-gulp.task('default', function() {
-	var process;
 
-	function restart(){
-		if (process) {
-			process.kill();
-		}
-		process = spawn('gulp', ['watch'], {stdio: 'inherit'});
-	}
-
-	gulp.watch('package.json', restart);
-	//restart();
-	process = spawn('gulp', ['watch:build'], {stdio: 'inherit'});
-});
 
 
 gulp.task('master', ['unrev'], function(){
