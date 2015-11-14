@@ -101,6 +101,7 @@ gulp.task( 'webpack', ['clean_js'], function( cb ) {
 			path: __dirname + '/assets/js',
 			filename: 'main.js'
 		},
+		devtool: '#inline-source-map',
 		module: {
 			loaders: [
 				{
@@ -126,7 +127,9 @@ if( pkg.es2015 ) {
 
 	gulp.task( 'js', ['webpack'], function() {
 		return gulp.src( 'assets/js/main.js' )
+		.pipe( sourcemaps.init( {loadMaps: true} ) )
 		.pipe( uglify() )
+		.pipe( sourcemaps.write( '.' ) )
 		.pipe( gulp.dest( 'assets/js' ) );
 	} );
 
