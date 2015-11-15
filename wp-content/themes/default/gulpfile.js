@@ -9,6 +9,7 @@ var stylus = require( 'gulp-stylus' );
 var autoprefixer = require( 'gulp-autoprefixer' );
 var minifyCss = require( 'gulp-minify-css' );
 var uglify = require( 'gulp-uglify' );
+var inline = require( 'gulp-inline-source' );
 var sourcemaps = require( 'gulp-sourcemaps' );
 var imagemin = require( 'gulp-imagemin' );
 var watch = require( 'gulp-watch' );
@@ -162,10 +163,16 @@ gulp.task( 'copy_templates', function() {
 	.pipe( gulp.dest( '.' ) );
 } );
 
+gulp.task( 'inline', function() {
+	return gulp.src( ['./header.php', './footer.php'] )
+	.pipe( inline( {compress: false} ) )
+	.pipe( gulp.dest( '.' ) );
+} );
+
 /*----------------------------*\
 	Prefix assets with Wordpress template directory
 \*----------------------------*/
-gulp.task( 'replace_wp', function() {
+gulp.task( 'replace_wp', ['inline'], function() {
 	return gulp.src( './*.php' )
 	.pipe( replace( /(["'])assets\//g, '$1<?=get_template_directory_uri()?>/assets/' ) )
 	.pipe( gulp.dest( '.' ) )
