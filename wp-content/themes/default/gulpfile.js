@@ -30,6 +30,9 @@ var livereload = require( 'gulp-livereload' );
 
 var webpack = require( 'webpack' );
 
+var iconfont = require( 'gulp-iconfont' );
+var iconfontCss = require( 'gulp-iconfont-css' );
+
 /*----------------------------*\
 	Load options from package file
 \*----------------------------*/
@@ -66,7 +69,7 @@ gulp.task( 'unrev', function( cb ) {
 /*----------------------------*\
 	Compile Stylus
 \*----------------------------*/
-gulp.task( 'css', ['clean_css'], function() {
+gulp.task( 'css', ['clean_css', 'iconfont'], function() {
 	return gulp.src( './src/styl/main.styl' )
 	.pipe( plumber( {
 		errorHandler: notify.onError( {
@@ -79,6 +82,29 @@ gulp.task( 'css', ['clean_css'], function() {
 	.pipe( autoprefixer() )
 	.pipe( minifyCss() )
 	.pipe( gulp.dest( './assets/css' ) );
+} );
+
+/*----------------------------*\
+	Icon Font
+\*----------------------------*/
+gulp.task( 'iconfont', function() {
+	var runTimestamp = Math.round( Date.now() / 1000 );
+	console.log(runTimestamp);
+	return gulp.src( ['src/icons/*.svg'], {base: 'src'} )
+	.pipe( iconfontCss( {
+		fontName: 'icons',
+		path: 'src/icons-template.css',
+		targetPath: '../../src/styl/icons.styl',
+		fontPath: '../fonts/'
+	} ) )
+	.pipe( iconfont( {
+		fontName: 'icons',
+		appendUnicode: true,
+		normalize: true,
+		formats: ['ttf', 'svg', 'eot', 'woff', 'woff2'],
+		timestamp: runTimestamp
+	} ) )
+	.pipe( gulp.dest( 'assets/fonts/' ) );
 } );
 
 /*----------------------------*\
@@ -227,7 +253,7 @@ gulp.task( 'default', ['cleanbuild'], function() {
 } );
 gulp.task( 'watch', function() {
 	livereload.listen();
-	watch( ['./src/styl/**/*', './src/js/**/*', './src/fonts/**/*', './src/templates/**/*'], function() {
+	watch( ['./src/styl/**/*', '!**/icons.styl', './src/js/**/*', './src/fonts/**/*', './src/icons/**/*', './src/templates/**/*'], function() {
 		gulp.start( 'master:notimages' );
 	} );
 	watch( './src/images/**/*', function() {
