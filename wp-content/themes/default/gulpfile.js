@@ -89,7 +89,7 @@ gulp.task( 'css', ['clean_css', 'iconfont'], function() {
 \*----------------------------*/
 gulp.task( 'iconfont', function() {
 	var runTimestamp = Math.round( Date.now() / 1000 );
-	console.log(runTimestamp);
+	
 	return gulp.src( ['src/icons/*.svg'], {base: 'src'} )
 	.pipe( iconfontCss( {
 		fontName: 'icons',
