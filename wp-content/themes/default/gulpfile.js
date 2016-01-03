@@ -17,6 +17,9 @@ var revReplace = require( 'gulp-rev-replace' );
 var cssRef = require( 'gulp-rev-css-url' );
 var reference = require( 'gulp-reference' );
 
+var svgmin = require( 'gulp-svgmin' );
+var svgstore = require( 'gulp-svgstore' );
+
 var fs = require( 'fs' );
 var del = require( 'del' );
 var through = require( 'through2' );
@@ -79,6 +82,20 @@ gulp.task( 'css', ['clean_css'], function() {
 	.pipe( minifyCss() )
 	.pipe( gulp.dest( './assets/css' ) );
 } );
+
+/*----------------------------*\
+	Icons
+\*----------------------------*/
+gulp.task( 'icons', function() {
+
+	return gulp.src( './src/icons/*.svg' )
+	.pipe( rename( {prefix: 'icon-'} ) )
+	.pipe( svgmin() )
+	.pipe( svgstore( {inlineSvg: true} ) )
+	.pipe( gulp.dest( './assets/images' ) );
+
+} );
+
 
 /*----------------------------*\
 	Optimize images
@@ -225,7 +242,7 @@ gulp.task( 'default', ['cleanbuild'], function() {
 
 	livereload.listen();
 
-	gulp.watch( ['./src/styl/**/*', '!**/icons.styl', './src/js/**/*', './src/fonts/**/*', './src/icons/**/*', './src/templates/**/*'], ['master:notimages'] );
+	gulp.watch( ['./src/styl/**/*', './src/js/**/*', './src/fonts/**/*', './src/icons/**/*', './src/templates/**/*'], ['master:notimages'] );
 
 	gulp.watch( ['./src/images/**/*'], ['master'] );
 
@@ -238,7 +255,7 @@ gulp.task( 'master', ['unrev'], function() {
 	gulp.start( 'build' );
 } );
 
-gulp.task( 'build', ['images', 'copy_templates', 'copy_fonts', 'css', 'js'], function() {
+gulp.task( 'build', ['images', 'icons', 'copy_templates', 'copy_fonts', 'css', 'js'], function() {
 	gulp.start( 'build2' );
 } );
 
@@ -246,7 +263,7 @@ gulp.task( 'master:notimages', ['unrev'], function() {
 	gulp.start( 'build:notimages' );
 } );
 
-gulp.task( 'build:notimages', ['copy_templates', 'copy_fonts', 'css', 'js'], function() {
+gulp.task( 'build:notimages', ['icons', 'copy_templates', 'copy_fonts', 'css', 'js'], function() {
 	gulp.start( 'build2' );
 } );
 
