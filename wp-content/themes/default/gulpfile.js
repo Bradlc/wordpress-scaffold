@@ -12,7 +12,6 @@ var uglify = require( 'gulp-uglify' );
 var inline = require( 'gulp-inline-source' );
 var sourcemaps = require( 'gulp-sourcemaps' );
 var imagemin = require( 'gulp-imagemin' );
-var watch = require( 'gulp-watch' );
 var rev = require( 'gulp-rev' );
 var revReplace = require( 'gulp-rev-replace' );
 var cssRef = require( 'gulp-rev-css-url' );
@@ -29,9 +28,6 @@ var vinylPaths = require( 'vinyl-paths' );
 var livereload = require( 'gulp-livereload' );
 
 var webpack = require( 'webpack' );
-
-var iconfont = require( 'gulp-iconfont' );
-var iconfontCss = require( 'gulp-iconfont-css' );
 
 /*----------------------------*\
 	Load options from package file
@@ -69,7 +65,7 @@ gulp.task( 'unrev', function( cb ) {
 /*----------------------------*\
 	Compile Stylus
 \*----------------------------*/
-gulp.task( 'css', ['clean_css', 'iconfont'], function() {
+gulp.task( 'css', ['clean_css'], function() {
 	return gulp.src( './src/styl/main.styl' )
 	.pipe( plumber( {
 		errorHandler: notify.onError( {
@@ -82,29 +78,6 @@ gulp.task( 'css', ['clean_css', 'iconfont'], function() {
 	.pipe( autoprefixer() )
 	.pipe( minifyCss() )
 	.pipe( gulp.dest( './assets/css' ) );
-} );
-
-/*----------------------------*\
-	Icon Font
-\*----------------------------*/
-gulp.task( 'iconfont', function() {
-	var runTimestamp = Math.round( Date.now() / 1000 );
-	
-	return gulp.src( ['src/icons/*.svg'], {base: 'src'} )
-	.pipe( iconfontCss( {
-		fontName: 'icons',
-		path: 'src/icons-template.css',
-		targetPath: '../../src/styl/icons.styl',
-		fontPath: '../fonts/'
-	} ) )
-	.pipe( iconfont( {
-		fontName: 'icons',
-		appendUnicode: true,
-		normalize: true,
-		formats: ['ttf', 'svg', 'eot', 'woff', 'woff2'],
-		timestamp: runTimestamp
-	} ) )
-	.pipe( gulp.dest( 'assets/fonts/' ) );
 } );
 
 /*----------------------------*\
@@ -249,16 +222,13 @@ gulp.task( 'rev', ['revision'], function() {
 	File watcher
 \*----------------------------*/
 gulp.task( 'default', ['cleanbuild'], function() {
-	gulp.start( 'watch' );
-} );
-gulp.task( 'watch', function() {
+
 	livereload.listen();
-	watch( ['./src/styl/**/*', '!**/icons.styl', './src/js/**/*', './src/fonts/**/*', './src/icons/**/*', './src/templates/**/*'], function() {
-		gulp.start( 'master:notimages' );
-	} );
-	watch( './src/images/**/*', function() {
-		gulp.start( 'master' );
-	} );
+
+	gulp.watch( ['./src/styl/**/*', '!**/icons.styl', './src/js/**/*', './src/fonts/**/*', './src/icons/**/*', './src/templates/**/*'], ['master:notimages'] );
+
+	gulp.watch( ['./src/images/**/*'], ['master'] );
+
 } );
 
 
