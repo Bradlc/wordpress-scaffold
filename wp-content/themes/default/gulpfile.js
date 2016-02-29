@@ -32,6 +32,8 @@ var livereload = require( 'gulp-livereload' );
 
 var webpack = require( 'webpack' );
 
+var watch = require( 'gulp-watch' );
+
 /*----------------------------*\
 	Load options from package file
 \*----------------------------*/
@@ -242,9 +244,13 @@ gulp.task( 'default', ['cleanbuild'], function() {
 
 	livereload.listen();
 
-	gulp.watch( ['./src/styl/**/*', './src/js/**/*', './src/fonts/**/*', './src/icons/**/*', './src/templates/**/*'], ['master:notimages'] );
+	watch( ['./src/styl/**/*', './src/js/**/*', './src/fonts/**/*', './src/icons/**/*', './src/templates/**/*'], function() {
+		gulp.start( 'master:notimages' );
+	} );
 
-	gulp.watch( ['./src/images/**/*'], ['master'] );
+	watch( ['./src/images/**/*'], function() {
+		gulp.start( 'master' );
+	} );
 
 } );
 
