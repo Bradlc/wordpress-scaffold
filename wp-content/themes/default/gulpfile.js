@@ -1,5 +1,6 @@
 var gulp = require( 'gulp' );
 var gutil = require( 'gulp-util' );
+var watch = require( 'gulp-watch' );
 var plumber = require( 'gulp-plumber' );
 var notify = require( 'gulp-notify' );
 var concat = require( 'gulp-concat' );
@@ -242,9 +243,13 @@ gulp.task( 'default', ['cleanbuild'], function() {
 
 	livereload.listen();
 
-	gulp.watch( ['./src/styl/**/*', './src/js/**/*', './src/fonts/**/*', './src/icons/**/*', './src/templates/**/*'], ['master:notimages'] );
+	watch( ['./src/styl/**/*', './src/js/**/*', './src/fonts/**/*', './src/icons/**/*', './src/templates/**/*'], function() {
+			gulp.start( 'master:notimages' );
+		} );
 
-	gulp.watch( ['./src/images/**/*'], ['master'] );
+	watch( ['./src/images/**/*'], function() {
+		gulp.start( 'master' );
+	} );
 
 } );
 
