@@ -180,7 +180,14 @@ gulp.task( 'copy_templates', function() {
 	.pipe( gulp.dest( '.' ) );
 } );
 
-gulp.task( 'inline', function() {
+
+gulp.task( 'pre_inline', function() {
+	return gulp.src( './assets/css/*' )
+	.pipe( replace( /url\(\.\./g, 'url(<?=get_template_directory_uri()?>/assets' ) )
+	.pipe( gulp.dest( './assets/css' ) );
+} );
+
+gulp.task( 'inline', ['pre_inline'], function() {
 	return gulp.src( ['./header.php', './footer.php'] )
 	.pipe( inline( {compress: false} ) )
 	.pipe( gulp.dest( '.' ) );
