@@ -9,7 +9,7 @@ var rename = require( 'gulp-rename' );
 var stylus = require( 'gulp-stylus' );
 var postcss = require( 'gulp-postcss' );
 var autoprefixer = require( 'autoprefixer' );
-var minifyCss = require( 'gulp-minify-css' );
+var cleanCSS = require( 'gulp-clean-css' );
 var uglify = require( 'gulp-uglify' );
 var inline = require( 'gulp-inline-source' );
 var sourcemaps = require( 'gulp-sourcemaps' );
@@ -81,7 +81,7 @@ gulp.task( 'css', ['clean_css'], function() {
 	} ) )
 	.pipe( stylus( {compress: false, url: 'embedurl'} ) )
 	.pipe( postcss( [ autoprefixer() ] ) )
-	.pipe( minifyCss() )
+	.pipe( cleanCSS() )
 	.pipe( gulp.dest( './assets/css' ) );
 } );
 
