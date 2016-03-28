@@ -142,35 +142,14 @@ gulp.task( 'webpack', ['clean_js'], function( cb ) {
 	} );
 } );
 
-if( pkg.es2015 ) {
+gulp.task( 'js', ['webpack'], function() {
+	return gulp.src( 'assets/js/main.js' )
+	.pipe( sourcemaps.init( {loadMaps: true} ) )
+	.pipe( uglify() )
+	.pipe( sourcemaps.write( '.' ) )
+	.pipe( gulp.dest( 'assets/js' ) );
+} );
 
-	gulp.task( 'js', ['webpack'], function() {
-		return gulp.src( 'assets/js/main.js' )
-		.pipe( sourcemaps.init( {loadMaps: true} ) )
-		.pipe( uglify() )
-		.pipe( sourcemaps.write( '.' ) )
-		.pipe( gulp.dest( 'assets/js' ) );
-	} );
-
-} else {
-
-	gulp.task( 'js', ['clean_js'], function() {
-		return gulp.src( './src/js/main.js' )
-		.pipe( plumber( {
-			errorHandler: notify.onError( {
-				title: 'JavaScript Error',
-				message: '<%= error.message %>',
-				icon: 'http://littleblackboxdev.co.uk/gulp-logo.png'
-			} )
-		} ) )
-		.pipe( sourcemaps.init() )
-		.pipe( reference() )
-		.pipe( uglify() )
-		.pipe( sourcemaps.write( '.', {sourceRoot: './src/js'} ) )
-		.pipe( gulp.dest( './assets/js' ) );
-	} );
-
-}
 
 gulp.task( 'copy_fonts', function() {
 	return gulp.src( './src/fonts/*' )
