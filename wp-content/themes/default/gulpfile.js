@@ -33,11 +33,6 @@ var livereload = require( 'gulp-livereload' );
 var webpack = require( 'webpack' );
 
 /*----------------------------*\
-	Load options from package file
-\*----------------------------*/
-var pkg = require( './package.json' );
-
-/*----------------------------*\
 	Clean
 \*----------------------------*/
 gulp.task( 'clean_css', function( cb ) {
@@ -52,7 +47,7 @@ gulp.task( 'clean_all', function( cb ) {
 
 gulp.task( 'unrev', function( cb ) {
 	var vp = vinylPaths();
-	gulp.src( './assets/**/*.{css,js,png,jpg,jpeg,gif,webp,svg,ico,eot,ttf,woff,woff2}' )
+	gulp.src( ['./assets/**/*.*', '!./assets/rev-manifest.json'] )
 	.pipe( vp )
 	.pipe( rename( function( path ) {
 		path.basename = path.basename.replace( /-[a-zA-Z0-9]{8,10}$/, '' );
@@ -201,7 +196,7 @@ var rmOrig = function() {
 
 // Save revisioned files, removing originals
 gulp.task( 'revision', function() {
-	return gulp.src( pkg.revision, {base: path.join( process.cwd(), 'assets' ) } )
+	return gulp.src( ['assets/**/*.*', '!**/*.map', '!assets/rev-manifest.json'], {base: path.join( process.cwd(), 'assets' ) } )
 	.pipe( rev() )
 	.pipe( cssRef() ) // replace references in CSS
 	.pipe( gulp.dest( './assets' ) )

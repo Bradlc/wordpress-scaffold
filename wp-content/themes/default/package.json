@@ -3,15 +3,6 @@
 	"version": "1.0.0",
 	"author": "",
 	"private": true,
-
-	"revision": [
-		"assets/images/**/*",
-		"assets/fonts/**/*",
-		"assets/css/*",
-		"assets/js/*",
-		"!**/*.map"
-	],
-
 	"devDependencies" : {
 		"gulp": "^3.9.0",
 		"gulp-util": "^3.0.7",
