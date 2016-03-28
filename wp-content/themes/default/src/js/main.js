@@ -1,1 +1,1 @@
-/// <reference path='example.js' />
+import './example.js';
