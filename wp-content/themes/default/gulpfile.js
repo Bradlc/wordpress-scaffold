@@ -159,15 +159,16 @@ gulp.task( 'copy_templates', function() {
 } );
 
 
-gulp.task( 'pre_inline', function() {
-	return gulp.src( './assets/css/*' )
-	.pipe( replace( /url\(\.\./g, 'url(<?=get_template_directory_uri()?>/assets' ) )
-	.pipe( gulp.dest( './assets/css' ) );
-} );
-
-gulp.task( 'inline', ['pre_inline'], function() {
-	return gulp.src( ['./header.php', './footer.php'] )
-	.pipe( inline( {compress: false} ) )
+gulp.task( 'inline', function() {
+	return gulp.src( './*.php' )
+	.pipe( inline( {compress: false, handlers: [
+		function( source, context, next ) {
+			if( source.fileContent && !source.content && ( source.type === 'css' ) ) {
+				source.replace = '<style>' + source.fileContent.replace( /url\(\.\./g, 'url(<?=get_template_directory_uri()?>/assets' ) + '</style>';
+			}
+			next();
+		}
+	]} ) )
 	.pipe( gulp.dest( '.' ) );
 } );
 
