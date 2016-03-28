@@ -48,6 +48,7 @@ gulp.task( 'clean_all', function( cb ) {
 gulp.task( 'unrev', function( cb ) {
 	var vp = vinylPaths();
 	gulp.src( ['./assets/**/*.*', '!./assets/rev-manifest.json'] )
+	.pipe( plumber() )
 	.pipe( vp )
 	.pipe( rename( function( path ) {
 		path.basename = path.basename.replace( /-[a-zA-Z0-9]{8,10}$/, '' );
@@ -84,6 +85,7 @@ gulp.task( 'css', ['clean_css'], function() {
 gulp.task( 'icons', function() {
 
 	return gulp.src( './src/icons/*.svg' )
+	.pipe( plumber() )
 	.pipe( rename( {prefix: 'icon-'} ) )
 	.pipe( svgmin() )
 	.pipe( svgstore( {inlineSvg: true} ) )
@@ -97,6 +99,7 @@ gulp.task( 'icons', function() {
 \*----------------------------*/
 gulp.task( 'images', function() {
 	return gulp.src( './src/images/**' )
+	.pipe( plumber() )
 	.pipe( imagemin( {progressive: true} ) )
 	.pipe( gulp.dest( './assets/images' ) );
 } );
@@ -137,6 +140,7 @@ gulp.task( 'webpack', ['clean_js'], function( cb ) {
 
 gulp.task( 'js', ['webpack'], function() {
 	return gulp.src( 'assets/js/main.js' )
+	.pipe( plumber() )
 	.pipe( sourcemaps.init( {loadMaps: true} ) )
 	.pipe( uglify() )
 	.pipe( sourcemaps.write( '.' ) )
@@ -146,16 +150,19 @@ gulp.task( 'js', ['webpack'], function() {
 
 gulp.task( 'copy_fonts', function() {
 	return gulp.src( './src/fonts/*' )
+	.pipe( plumber() )
 	.pipe( gulp.dest('./assets/fonts' ) );
 } );
 gulp.task( 'copy_templates', function() {
 	return gulp.src( './src/templates/*' )
+	.pipe( plumber() )
 	.pipe( gulp.dest( '.' ) );
 } );
 
 
 gulp.task( 'inline', function() {
 	return gulp.src( './*.php' )
+	.pipe( plumber() )
 	.pipe( inline( {compress: false, handlers: [
 		function( source, context, next ) {
 			if( source.fileContent && !source.content && ( source.type === 'css' ) ) {
@@ -172,6 +179,7 @@ gulp.task( 'inline', function() {
 \*----------------------------*/
 gulp.task( 'replace_wp', ['inline'], function() {
 	return gulp.src( './*.php' )
+	.pipe( plumber() )
 	.pipe( replace( /(["'])assets\//g, '$1<?=get_template_directory_uri()?>/assets/' ) )
 	.pipe( gulp.dest( '.' ) )
 	.on( 'end', function() {
@@ -197,6 +205,7 @@ var rmOrig = function() {
 // Save revisioned files, removing originals
 gulp.task( 'revision', function() {
 	return gulp.src( ['assets/**/*.*', '!**/*.map', '!assets/rev-manifest.json'], {base: path.join( process.cwd(), 'assets' ) } )
+	.pipe( plumber() )
 	.pipe( rev() )
 	.pipe( cssRef() ) // replace references in CSS
 	.pipe( gulp.dest( './assets' ) )
@@ -210,6 +219,7 @@ gulp.task( 'rev', ['revision'], function() {
 	var manifest = gulp.src( './assets/rev-manifest.json' );
 
 	return gulp.src( './*.php' )
+	.pipe( plumber() )
 	.pipe( revReplace( {
 		manifest: manifest,
 		replaceInExtensions: ['.php']
