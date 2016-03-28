@@ -17,7 +17,6 @@ var imagemin = require( 'gulp-imagemin' );
 var rev = require( 'gulp-rev' );
 var revReplace = require( 'gulp-rev-replace' );
 var cssRef = require( 'gulp-rev-css-url' );
-var reference = require( 'gulp-reference' );
 
 var svgmin = require( 'gulp-svgmin' );
 var svgstore = require( 'gulp-svgstore' );

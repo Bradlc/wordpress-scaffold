@@ -36,7 +36,6 @@
 		"del": "^1.2.0",
 		"vinyl-paths": "^1.0.0",
 		"gulp-livereload": "^3.8.0",
-		"gulp-reference": "^1.1.2",
 
 		"gulp-svgmin": "^1.2.0",
 		"gulp-svgstore": "^5.0.5",
