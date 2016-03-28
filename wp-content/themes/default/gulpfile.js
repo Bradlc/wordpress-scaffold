@@ -25,7 +25,6 @@ var fs = require( 'fs' );
 var del = require( 'del' );
 var through = require( 'through2' );
 var path = require( 'path' );
-var spawn = require( 'child_process' ).spawn;
 
 var vinylPaths = require( 'vinyl-paths' );
 
