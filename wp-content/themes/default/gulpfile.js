@@ -30,6 +30,7 @@ var vinylPaths = require( 'vinyl-paths' );
 
 var livereload = require( 'gulp-livereload' );
 
+var eslint = require( 'gulp-eslint' );
 var webpack = require( 'webpack' );
 
 /*----------------------------*\
@@ -107,7 +108,29 @@ gulp.task( 'images', function() {
 /*----------------------------*\
 	JavaScript
 \*----------------------------*/
-gulp.task( 'webpack', ['clean_js'], function( cb ) {
+gulp.task( 'js_lint', ['clean_js'], function() {
+
+	gulp.src( ['./src/js/**/*.js', '!./src/js/vendor/**/*'] )
+	.pipe( plumber( {
+		errorHandler: notify.onError( {
+			title: 'ESLint',
+			message: '<%= error.message %>'
+		} )
+	} ) )
+	.pipe( eslint() )
+	.pipe( eslint.format() )
+	.pipe( eslint.results( function( results ) {
+		if( results.length ) {
+			throw new gutil.PluginError( {
+				plugin: 'ESLint',
+				message: results.warningCount + ' warning' + ( results.warningCount !== 1 ? 's' : '' ) + '. ' + results.errorCount + ' error' + ( results.errorCount !== 1 ? 's' : '' ) + '.'
+			} );
+		}
+	} ) );
+
+} );
+
+gulp.task( 'webpack', ['js_lint'], function( cb ) {
 	// run webpack
 	webpack( {
 		context: __dirname + '/src/js',
