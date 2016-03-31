@@ -36,10 +36,10 @@ var webpack = require( 'webpack' );
 /*----------------------------*\
 	Clean
 \*----------------------------*/
-gulp.task( 'clean_css', function( cb ) {
+gulp.task( 'clean_css', ['unrev'], function( cb ) {
 	del( ['./assets/css/*'], cb );
 } );
-gulp.task( 'clean_js', function( cb ) {
+gulp.task( 'clean_js', ['unrev'], function( cb ) {
 	del( ['./assets/js/*'], cb );
 } );
 gulp.task( 'clean_all', function( cb ) {
@@ -83,7 +83,7 @@ gulp.task( 'css', ['clean_css'], function() {
 /*----------------------------*\
 	Icons
 \*----------------------------*/
-gulp.task( 'icons', function() {
+gulp.task( 'icons', ['unrev'], function() {
 
 	return gulp.src( './src/icons/*.svg' )
 	.pipe( plumber() )
@@ -98,7 +98,7 @@ gulp.task( 'icons', function() {
 /*----------------------------*\
 	Optimize images
 \*----------------------------*/
-gulp.task( 'images', function() {
+gulp.task( 'images', ['unrev'], function() {
 	return gulp.src( './src/images/**' )
 	.pipe( plumber() )
 	.pipe( imagemin( {progressive: true} ) )
@@ -171,19 +171,19 @@ gulp.task( 'js', ['webpack'], function() {
 } );
 
 
-gulp.task( 'copy_fonts', function() {
+gulp.task( 'copy_fonts', ['unrev'], function() {
 	return gulp.src( './src/fonts/*' )
 	.pipe( plumber() )
 	.pipe( gulp.dest('./assets/fonts' ) );
 } );
-gulp.task( 'copy_templates', function() {
+gulp.task( 'copy_templates', ['unrev'], function() {
 	return gulp.src( './src/templates/*' )
 	.pipe( plumber() )
 	.pipe( gulp.dest( '.' ) );
 } );
 
 
-gulp.task( 'inline', function() {
+gulp.task( 'inline', ['rev'], function() {
 	return gulp.src( './*.php' )
 	.pipe( plumber() )
 	.pipe( inline( {compress: false, handlers: [
@@ -205,9 +205,6 @@ gulp.task( 'replace_wp', ['inline'], function() {
 	.pipe( plumber() )
 	.pipe( replace( /(["'])assets\//g, '$1<?=get_template_directory_uri()?>/assets/' ) )
 	.pipe( gulp.dest( '.' ) )
-	.on( 'end', function() {
-		livereload.reload();
-	} );
 } );
 
 /*----------------------------*\
@@ -226,7 +223,7 @@ var rmOrig = function() {
 };
 
 // Save revisioned files, removing originals
-gulp.task( 'revision', function() {
+gulp.task( 'revision', ['assets'], function() {
 	return gulp.src( ['assets/**/*.*', '!**/*.map', '!assets/rev-manifest.json'], {base: path.join( process.cwd(), 'assets' ) } )
 	.pipe( plumber() )
 	.pipe( rev() )
@@ -258,38 +255,32 @@ gulp.task( 'default', ['cleanbuild'], function() {
 	livereload.listen();
 
 	watch( ['./src/styl/**/*', './src/js/**/*', './src/fonts/**/*', './src/icons/**/*', './src/templates/**/*'], function() {
-			gulp.start( 'master:notimages' );
+			gulp.start( 'build' );
 		} );
 
 	watch( ['./src/images/**/*'], function() {
-		gulp.start( 'master' );
+		gulp.start( 'build' );
 	} );
 
 } );
 
 
 
+gulp.task( 'assets', ['images', 'icons', 'copy_templates', 'copy_fonts', 'css', 'js'] );
 
-gulp.task( 'master', ['unrev'], function() {
-	gulp.start( 'build' );
+/**
+ * build
+ * unrev -> [images, icons, copy_templates, copy_fonts, css, js] -> rev -> replace_wp
+ */
+
+gulp.task( 'build', ['replace_wp'], function() {
+	livereload.reload();
 } );
 
-gulp.task( 'build', ['images', 'icons', 'copy_templates', 'copy_fonts', 'css', 'js'], function() {
-	gulp.start( 'build2' );
-} );
-
-gulp.task( 'master:notimages', ['unrev'], function() {
-	gulp.start( 'build:notimages' );
-} );
-
-gulp.task( 'build:notimages', ['icons', 'copy_templates', 'copy_fonts', 'css', 'js'], function() {
-	gulp.start( 'build2' );
-} );
-
-gulp.task( 'build2', ['rev'], function() {
-	return gulp.start( 'replace_wp' );
-} );
-
+/**
+ * cleanbuild
+ * clean_all -> build
+ */
 gulp.task( 'cleanbuild', ['clean_all'], function() {
-	gulp.start( 'master' );
+	gulp.start( 'build' );
 } );
