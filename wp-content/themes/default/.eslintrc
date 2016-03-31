@@ -1,6 +1,7 @@
 {
 	"extends": "airbnb/base",
 	"rules": {
-		"indent": [2, "tab"]
+		"indent": [2, "tab"],
+		"linebreak-style": [2, "unix"]
 	}
 }
