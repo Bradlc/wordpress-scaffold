@@ -39,13 +39,13 @@ var gulpif = require( 'gulp-if' );
 /*----------------------------*\
 	Clean
 \*----------------------------*/
-gulp.task( 'clean_css', ['unrev'], function() {
+gulp.task( 'clean:css', ['unrev'], function() {
 	return del( ['./assets/css/*'] );
 } );
-gulp.task( 'clean_js', ['unrev'], function() {
+gulp.task( 'clean:js', ['unrev'], function() {
 	return del( ['./assets/js/*'] );
 } );
-gulp.task( 'clean_all', function() {
+gulp.task( 'clean:all', function() {
 	return del( ['./assets/**/*', './*.php'] );
 } );
 
@@ -71,7 +71,7 @@ gulp.task( 'unrev', function( cb ) {
 /*----------------------------*\
 	Compile Stylus
 \*----------------------------*/
-gulp.task( 'css', ['clean_css'], function() {
+gulp.task( 'css', ['clean:css'], function() {
 	return gulp.src( './src/styl/main.styl' )
 	.pipe( plumber( {
 		errorHandler: notify.onError( {
@@ -115,7 +115,7 @@ gulp.task( 'images', ['unrev'], function() {
 /*----------------------------*\
 	JavaScript
 \*----------------------------*/
-gulp.task( 'js_lint', ['clean_js'], function() {
+gulp.task( 'lint:js', ['clean:js'], function() {
 
 	gulp.src( ['./src/js/**/*.js', '!./src/js/vendor/**/*'] )
 	.pipe( plumber( {
@@ -137,7 +137,7 @@ gulp.task( 'js_lint', ['clean_js'], function() {
 
 } );
 
-gulp.task( 'webpack', ['js_lint'], function( cb ) {
+gulp.task( 'webpack', ['lint:js'], function( cb ) {
 	// run webpack
 	webpack( {
 		context: __dirname + '/src/js',
@@ -179,13 +179,13 @@ gulp.task( 'js', ['webpack'], function() {
 } );
 
 
-gulp.task( 'copy_fonts', ['unrev'], function() {
+gulp.task( 'copy:fonts', ['unrev'], function() {
 	return gulp.src( './src/fonts/*' )
 	.pipe( plumber() )
 	.pipe( gulp.dest('./assets/fonts' ) )
 	.on( 'end', browserSync.reload );
 } );
-gulp.task( 'copy_templates', ['unrev'], function() {
+gulp.task( 'copy:templates', ['unrev'], function() {
 	return gulp.src( './src/templates/*' )
 	.pipe( plumber() )
 	.pipe( gulp.dest( '.' ) )
@@ -211,7 +211,7 @@ gulp.task( 'inline', ['rev'], function() {
 /*----------------------------*\
 	Prefix assets with Wordpress template directory
 \*----------------------------*/
-gulp.task( 'replace_wp', ['inline'], function() {
+gulp.task( 'replace:wp', ['inline'], function() {
 	return gulp.src( './*.php' )
 	.pipe( plumber() )
 	.pipe( replace( /(["'])assets\//g, '$1<?=get_template_directory_uri()?>/assets/' ) )
@@ -285,11 +285,11 @@ gulp.task( 'default', ['cleanbuild'], function() {
 		} );
 
 		watch( ['./src/fonts/**/*'], function() {
-			gulp.start( 'copy_fonts' );
+			gulp.start( 'copy:fonts' );
 		} );
 
 		watch( ['./src/templates/**/*'], function() {
-			gulp.start( 'copy_templates' );
+			gulp.start( 'copy:templates' );
 		} );
 
 		watch( ['./src/icons/**/*'], function() {
@@ -306,19 +306,19 @@ gulp.task( 'default', ['cleanbuild'], function() {
 
 
 
-gulp.task( 'assets', ['images', 'icons', 'copy_templates', 'copy_fonts', 'css', 'js'] );
+gulp.task( 'assets', ['images', 'icons', 'copy:templates', 'copy:fonts', 'css', 'js'] );
 
 /**
  * build
- * unrev -> [images, icons, copy_templates, copy_fonts, css, js] -> rev -> replace_wp
+ * unrev -> [images, icons, copy:templates, copy:fonts, css, js] -> rev -> replace:wp
  */
 
-gulp.task( 'build', ['replace_wp'] );
+gulp.task( 'build', ['replace:wp'] );
 
 /**
  * cleanbuild
- * clean_all -> build
+ * clean:all -> build
  */
-gulp.task( 'cleanbuild', ['clean_all'], function() {
+gulp.task( 'cleanbuild', ['clean:all'], function() {
 	gulp.start( 'build' );
 } );
