@@ -129,7 +129,7 @@ gulp.task( 'js_lint', ['clean_js'], function() {
 	.pipe( eslint() )
 	.pipe( eslint.format() )
 	.pipe( eslint.results( function( results ) {
-		if( results.length ) {
+		if( results.warningCount > 0 || results.errorCount > 0 ) {
 			throw new gutil.PluginError( {
 				plugin: 'ESLint',
 				message: results.warningCount + ' warning' + ( results.warningCount !== 1 ? 's' : '' ) + '. ' + results.errorCount + ' error' + ( results.errorCount !== 1 ? 's' : '' ) + '.'
