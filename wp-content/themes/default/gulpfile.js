@@ -91,15 +91,13 @@ gulp.task( 'css', ['clean_css'], function() {
 	Icons
 \*----------------------------*/
 gulp.task( 'icons', ['unrev'], function() {
-
 	return gulp.src( './src/icons/*.svg' )
 	.pipe( plumber() )
 	.pipe( rename( {prefix: 'icon-'} ) )
-	.pipe( svgmin() )
+	.pipe( svgmin( {plugins: [{removeTitle: true}]} ) )
 	.pipe( svgstore( {inlineSvg: true} ) )
 	.pipe( gulp.dest( './assets/images' ) )
 	.on( 'end', browserSync.reload );
-
 } );
 
 
