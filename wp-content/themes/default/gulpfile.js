@@ -80,9 +80,11 @@ gulp.task( 'css', ['clean:css'], function() {
 			icon: 'http://littleblackboxdev.co.uk/gulp-logo.png'
 		} )
 	} ) )
+	.pipe( sourcemaps.init() )
 	.pipe( stylus( {compress: false, url: 'embedurl'} ) )
 	.pipe( postcss( [ autoprefixer() ] ) )
-	.pipe( cleanCSS() )
+	.pipe( gulpif( argv.production, cleanCSS() ) )
+	.pipe( sourcemaps.write( '.' ) )
 	.pipe( gulp.dest( './assets/css' ) )
 	.pipe( browserSync.stream( {match: '**/*.css'} ) );
 } );
