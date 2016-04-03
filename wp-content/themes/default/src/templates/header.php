@@ -23,4 +23,4 @@
 		<![endif]-->
 	</head>
 	<body>
-		<!--<div class="hide"><img src="assets/images/icons.svg" inline></div>-->
+		<!--<div class="hidden"><img src="assets/images/icons.svg" inline></div>-->

@@ -1,13 +1,3 @@
-html {
-	box-sizing: border-box
-}
-
-*,
-*:before,
-*:after {
-	box-sizing: inherit
-}
-
 .container {
 	max-width: containerWidth + gutterWidth
 	padding-right: (gutterWidth / 2)
@@ -35,74 +25,4 @@ html {
 	font-size: fontSize
 	padding-left: (gutterWidth / 2)
 	padding-right: (gutterWidth / 2)
-}
-
-.cf:before,
-.cf:after {
-	display: table
-	content: " "
-}
-
-.cf:after {
-	clear: both
-}
-
-.hide {
-	display: none
-}
-
-.pull-left {
-	float: left !important
-}
-.pull-right {
-	float: right !important
-}
-
-.text-left {
-	text-align: left
-}
-
-.text-right {
-	text-align: right
-}
-
-.text-center {
-	text-align: center
-}
-
-.text-justify {
-	text-align: justify
-}
-
-.text-nowrap {
-	white-space: nowrap
-}
-
-.text-lowercase {
-	text-transform: lowercase
-}
-
-.text-uppercase {
-	text-transform: uppercase
-}
-
-.text-capitalize {
-	text-transform: capitalize
-}
-
-/*----------------------------*\
-	Trim
-\*----------------------------*/
-.trim,
-.trim-top {
-	> *:first-child {
-		margin-top: 0 !important
-	}
-}
-
-.trim,
-.trim-bottom {
-	> *:last-child {
-		margin-bottom: 0 !important
-	}
 }

@@ -1,0 +1,96 @@
+/**
+ * clearfix
+ */
+.cf:before,
+.cf:after {
+	display: table
+	content: " "
+}
+
+.cf:after {
+	clear: both
+}
+
+/**
+ * visibility
+ */
+.hidden {
+	display: none
+}
+
+.invisible {
+	visibility: hidden
+}
+
+.sr-only {
+	position: absolute
+	width: 1px
+	height: 1px
+	padding: 0
+	margin: -1px
+	overflow: hidden
+	clip: rect(0, 0, 0, 0)
+	border: 0
+}
+
+/**
+ * floats
+ */
+.pull-left {
+	float: left !important
+}
+.pull-right {
+	float: right !important
+}
+
+/**
+ * text
+ */
+.text-left {
+	text-align: left
+}
+
+.text-right {
+	text-align: right
+}
+
+.text-center {
+	text-align: center
+}
+
+.text-justify {
+	text-align: justify
+}
+
+.text-nowrap {
+	white-space: nowrap
+}
+
+.text-lowercase {
+	text-transform: lowercase
+}
+
+.text-uppercase {
+	text-transform: uppercase
+}
+
+.text-capitalize {
+	text-transform: capitalize
+}
+
+/**
+ * trim
+ */
+.trim,
+.trim-top {
+	> *:first-child {
+		margin-top: 0 !important
+	}
+}
+
+.trim,
+.trim-bottom {
+	> *:last-child {
+		margin-bottom: 0 !important
+	}
+}
