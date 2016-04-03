@@ -39,14 +39,14 @@ var gulpif = require( 'gulp-if' );
 /*----------------------------*\
 	Clean
 \*----------------------------*/
-gulp.task( 'clean:css', ['unrev'], function() {
-	return del( ['./assets/css/*'] );
+gulp.task( 'clean:css', ['unrev'], function( cb ) {
+	del( ['./assets/css/*'], cb );
 } );
-gulp.task( 'clean:js', ['unrev'], function() {
-	return del( ['./assets/js/*'] );
+gulp.task( 'clean:js', ['unrev'], function( cb ) {
+	del( ['./assets/js/*'], cb );
 } );
-gulp.task( 'clean:all', function() {
-	return del( ['./assets/**/*', './*.php'] );
+gulp.task( 'clean:all', function( cb ) {
+	del( ['./assets/**/*', './*.php'], cb );
 } );
 
 gulp.task( 'unrev', function( cb ) {
