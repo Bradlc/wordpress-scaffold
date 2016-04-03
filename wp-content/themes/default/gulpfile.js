@@ -188,6 +188,7 @@ gulp.task( 'copy:fonts', ['unrev'], function() {
 gulp.task( 'copy:templates', ['unrev'], function() {
 	return gulp.src( './src/templates/*' )
 	.pipe( plumber() )
+	.pipe( replace( /(["'])assets\//g, '$1<?=get_template_directory_uri()?>/assets/' ) )
 	.pipe( gulp.dest( '.' ) )
 	.on( 'end', browserSync.reload );
 } );
@@ -206,16 +207,6 @@ gulp.task( 'inline', ['rev'], function() {
 	]} ) ) )
 	.pipe( gulpif( !argv.production, inline( {compress: false, ignore: ['css']} ) ) )
 	.pipe( gulp.dest( '.' ) );
-} );
-
-/*----------------------------*\
-	Prefix assets with Wordpress template directory
-\*----------------------------*/
-gulp.task( 'replace:wp', ['inline'], function() {
-	return gulp.src( './*.php' )
-	.pipe( plumber() )
-	.pipe( replace( /(["'])assets\//g, '$1<?=get_template_directory_uri()?>/assets/' ) )
-	.pipe( gulp.dest( '.' ) )
 } );
 
 /*----------------------------*\
@@ -310,10 +301,10 @@ gulp.task( 'assets', ['images', 'icons', 'copy:templates', 'copy:fonts', 'css', 
 
 /**
  * build
- * unrev -> [images, icons, copy:templates, copy:fonts, css, js] -> rev -> replace:wp
+ * unrev -> [images, icons, copy:templates, copy:fonts, css, js] -> rev -> inline
  */
 
-gulp.task( 'build', ['replace:wp'] );
+gulp.task( 'build', ['inline'] );
 
 /**
  * cleanbuild
