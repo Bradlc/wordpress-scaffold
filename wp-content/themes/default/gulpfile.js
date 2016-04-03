@@ -33,6 +33,9 @@ var livereload = require( 'gulp-livereload' );
 var eslint = require( 'gulp-eslint' );
 var webpack = require( 'webpack' );
 
+var argv = require( 'yargs' ).argv;
+var gulpif = require( 'gulp-if' );
+
 /*----------------------------*\
 	Clean
 \*----------------------------*/
@@ -43,10 +46,13 @@ gulp.task( 'clean_js', ['unrev'], function( cb ) {
 	del( ['./assets/js/*'], cb );
 } );
 gulp.task( 'clean_all', function( cb ) {
-	del( ['./assets/**/*'], cb );
+	del( ['./assets/**/*', './*.php'], cb );
 } );
 
 gulp.task( 'unrev', function( cb ) {
+
+	if( !argv.production ) { cb(); return; }
+
 	var vp = vinylPaths();
 	gulp.src( ['./assets/**/*.*', '!./assets/rev-manifest.json'] )
 	.pipe( plumber() )
@@ -186,14 +192,15 @@ gulp.task( 'copy_templates', ['unrev'], function() {
 gulp.task( 'inline', ['rev'], function() {
 	return gulp.src( './*.php' )
 	.pipe( plumber() )
-	.pipe( inline( {compress: false, handlers: [
+	.pipe( gulpif( argv.production, inline( {compress: false, handlers: [
 		function( source, context, next ) {
 			if( source.fileContent && !source.content && ( source.type === 'css' ) ) {
 				source.replace = '<style>' + source.fileContent.replace( /url\(\.\./g, 'url(<?=get_template_directory_uri()?>/assets' ) + '</style>';
 			}
 			next();
 		}
-	]} ) )
+	]} ) ) )
+	.pipe( gulpif( !argv.production, inline( {compress: false, ignore: ['css']} ) ) )
 	.pipe( gulp.dest( '.' ) );
 } );
 
@@ -223,7 +230,10 @@ var rmOrig = function() {
 };
 
 // Save revisioned files, removing originals
-gulp.task( 'revision', ['assets'], function() {
+gulp.task( 'revision', ['assets'], function( cb ) {
+
+	if( !argv.production ) { cb(); return; }
+
 	return gulp.src( ['assets/**/*.*', '!**/*.map', '!assets/rev-manifest.json'], {base: path.join( process.cwd(), 'assets' ) } )
 	.pipe( plumber() )
 	.pipe( rev() )
@@ -235,7 +245,10 @@ gulp.task( 'revision', ['assets'], function() {
 } );
 
 // Replace references to files
-gulp.task( 'rev', ['revision'], function() {
+gulp.task( 'rev', ['revision'], function( cb ) {
+
+	if( !argv.production ) { cb(); return; }
+
 	var manifest = gulp.src( './assets/rev-manifest.json' );
 
 	return gulp.src( './*.php' )
@@ -252,15 +265,35 @@ gulp.task( 'rev', ['revision'], function() {
 \*----------------------------*/
 gulp.task( 'default', ['cleanbuild'], function() {
 
-	livereload.listen();
+	if( !argv.production ) {
 
-	watch( ['./src/styl/**/*', './src/js/**/*', './src/fonts/**/*', './src/icons/**/*', './src/templates/**/*'], function() {
-			gulp.start( 'build' );
+		livereload.listen();
+
+		watch( ['./src/styl/**/*'], function() {
+			gulp.start( 'css' );
 		} );
 
-	watch( ['./src/images/**/*'], function() {
-		gulp.start( 'build' );
-	} );
+		watch( ['./src/js/**/*'], function() {
+			gulp.start( 'js' );
+		} );
+
+		watch( ['./src/fonts/**/*'], function() {
+			gulp.start( 'copy_fonts' );
+		} );
+
+		watch( ['./src/templates/**/*'], function() {
+			gulp.start( 'copy_templates' );
+		} );
+
+		watch( ['./src/icons/**/*'], function() {
+			gulp.start( 'icons' );
+		} );
+
+		watch( ['./src/images/**/*'], function() {
+			gulp.start( 'images' );
+		} );
+
+	}
 
 } );
 
