@@ -28,7 +28,7 @@ var path = require( 'path' );
 
 var vinylPaths = require( 'vinyl-paths' );
 
-var livereload = require( 'gulp-livereload' );
+var browserSync = require( 'browser-sync' ).create();
 
 var eslint = require( 'gulp-eslint' );
 var webpack = require( 'webpack' );
@@ -83,7 +83,8 @@ gulp.task( 'css', ['clean_css'], function() {
 	.pipe( stylus( {compress: false, url: 'embedurl'} ) )
 	.pipe( postcss( [ autoprefixer() ] ) )
 	.pipe( cleanCSS() )
-	.pipe( gulp.dest( './assets/css' ) );
+	.pipe( gulp.dest( './assets/css' ) )
+	.pipe( browserSync.stream( {match: '**/*.css'} ) );
 } );
 
 /*----------------------------*\
@@ -96,7 +97,8 @@ gulp.task( 'icons', ['unrev'], function() {
 	.pipe( rename( {prefix: 'icon-'} ) )
 	.pipe( svgmin() )
 	.pipe( svgstore( {inlineSvg: true} ) )
-	.pipe( gulp.dest( './assets/images' ) );
+	.pipe( gulp.dest( './assets/images' ) )
+	.on( 'end', browserSync.reload );
 
 } );
 
@@ -108,7 +110,8 @@ gulp.task( 'images', ['unrev'], function() {
 	return gulp.src( './src/images/**' )
 	.pipe( plumber() )
 	.pipe( imagemin( {progressive: true} ) )
-	.pipe( gulp.dest( './assets/images' ) );
+	.pipe( gulp.dest( './assets/images' ) )
+	.on( 'end', browserSync.reload );
 } );
 
 /*----------------------------*\
@@ -173,19 +176,22 @@ gulp.task( 'js', ['webpack'], function() {
 	.pipe( sourcemaps.init( {loadMaps: true} ) )
 	.pipe( uglify() )
 	.pipe( sourcemaps.write( '.' ) )
-	.pipe( gulp.dest( 'assets/js' ) );
+	.pipe( gulp.dest( 'assets/js' ) )
+	.on( 'end', browserSync.reload );
 } );
 
 
 gulp.task( 'copy_fonts', ['unrev'], function() {
 	return gulp.src( './src/fonts/*' )
 	.pipe( plumber() )
-	.pipe( gulp.dest('./assets/fonts' ) );
+	.pipe( gulp.dest('./assets/fonts' ) )
+	.on( 'end', browserSync.reload );
 } );
 gulp.task( 'copy_templates', ['unrev'], function() {
 	return gulp.src( './src/templates/*' )
 	.pipe( plumber() )
-	.pipe( gulp.dest( '.' ) );
+	.pipe( gulp.dest( '.' ) )
+	.on( 'end', browserSync.reload );
 } );
 
 
@@ -267,7 +273,10 @@ gulp.task( 'default', ['cleanbuild'], function() {
 
 	if( !argv.production ) {
 
-		livereload.listen();
+		browserSync.init( {
+			proxy: 'localhost',
+			open: 'external'
+		} );
 
 		watch( ['./src/styl/**/*'], function() {
 			gulp.start( 'css' );
@@ -306,9 +315,7 @@ gulp.task( 'assets', ['images', 'icons', 'copy_templates', 'copy_fonts', 'css', 
  * unrev -> [images, icons, copy_templates, copy_fonts, css, js] -> rev -> replace_wp
  */
 
-gulp.task( 'build', ['replace_wp'], function() {
-	livereload.reload();
-} );
+gulp.task( 'build', ['replace_wp'] );
 
 /**
  * cleanbuild

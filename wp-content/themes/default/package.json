@@ -28,7 +28,7 @@
 		"through2": "^2.0.0",
 		"del": "^1.2.0",
 		"vinyl-paths": "^1.0.0",
-		"gulp-livereload": "^3.8.0",
+		"browser-sync": "^2.11.2",
 
 		"gulp-svgmin": "^1.2.0",
 		"gulp-svgstore": "^5.0.5",
