@@ -6,6 +6,12 @@ ini_set('error_reporting', E_ALL);
 remove_action( 'wp_head', 'print_emoji_detection_script', 7 );
 remove_action( 'wp_print_styles', 'print_emoji_styles' );
 
+// remove wp-embed script
+function deregister_script_embed() {
+	wp_deregister_script( 'wp-embed' );
+}
+add_action( 'wp_footer', 'deregister_script_embed' );
+
 
 function custom_excerpt_length( $length ) {
 	return 20;
