@@ -3,6 +3,7 @@
 	"version": "1.0.0",
 	"author": "",
 	"private": true,
+	"https": true,
 	"devDependencies" : {
 		"gulp": "^3.9.0",
 		"gulp-util": "^3.0.7",

@@ -36,6 +36,8 @@ var webpack = require( 'webpack' );
 var argv = require( 'yargs' ).argv;
 var gulpif = require( 'gulp-if' );
 
+var pkg = require( './package.json' );
+
 /*----------------------------*\
 	Clean
 \*----------------------------*/
@@ -264,8 +266,10 @@ gulp.task( 'default', ['cleanbuild'], function() {
 
 	if( !argv.production ) {
 
+		var protocol = pkg.https ? 'https' : 'http';
+
 		browserSync.init( {
-			proxy: 'localhost',
+			proxy: protocol + '://localhost',
 			open: 'external'
 		} );
 
