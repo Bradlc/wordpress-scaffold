@@ -188,7 +188,7 @@ gulp.task( 'copy:fonts', ['unrev'], function() {
 	.on( 'end', browserSync.reload );
 } );
 gulp.task( 'copy:templates', ['unrev'], function() {
-	return gulp.src( './src/templates/*' )
+	return gulp.src( './src/templates/**/*' )
 	.pipe( plumber() )
 	.pipe( replace( /(["'])assets\//g, '$1<?=get_template_directory_uri()?>/assets/' ) )
 	.pipe( gulp.dest( '.' ) )
@@ -197,7 +197,7 @@ gulp.task( 'copy:templates', ['unrev'], function() {
 
 
 gulp.task( 'inline', ['rev'], function() {
-	return gulp.src( './*.php' )
+	return gulp.src( ['./**/*.php', '!./src/**/*', '!node_modules/**/*'] )
 	.pipe( plumber() )
 	.pipe( gulpif( argv.production, inline( {compress: false, handlers: [
 		function( source, context, next ) {
@@ -248,7 +248,7 @@ gulp.task( 'rev', ['revision'], function( cb ) {
 
 	var manifest = gulp.src( './assets/rev-manifest.json' );
 
-	return gulp.src( './*.php' )
+	return gulp.src( ['./**/*.php', '!./src/**/*', '!node_modules/**/*'] )
 	.pipe( plumber() )
 	.pipe( revReplace( {
 		manifest: manifest,
